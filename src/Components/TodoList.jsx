@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Responsive.css';
 
-export default function TodoList({ todos, setTodos, editIndex, setEditIndex }) {
-  // const [todos, setTodos] = useState([]);
+export default function TodoList({ todos, setTodos, editIndex, setEditIndex, isBackendTrue, RemoveTodo, EditTodo }) {
+  const [items, setItems] = useState([]);
   // const [editIndex, setEditIndex] = useState(-1);
   const [editContent, setEditContent] = useState(''); // To store the current editing content
 
@@ -49,17 +49,29 @@ export default function TodoList({ todos, setTodos, editIndex, setEditIndex }) {
     }
   };
 
+
+const handleChange = (e) => {
+  console.log("changed")
+  const {name, value} = e.target
+  setItems(prevItems => {
+    return {
+      ...prevItems,
+      [name] : [value]
+    }
+  })
+}
+
   return (
     <ol className="margin list-div">
       {todos.map((item, index) => (
-        <div className="margin list" key={item._id}>
+        <div className="margin list" key={item.id}>
           {index === editIndex ? (
             <div className='edit-list'>
               <input 
                 className='edit-input' 
                 type="text" 
                 value={editContent} 
-                onChange={handleEditChange}
+                onChange={isBackendTrue ? handleChange : handleEditChange}
               />
               <div className='icon-div'>
                 <i 

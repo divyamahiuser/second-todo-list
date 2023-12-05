@@ -9,6 +9,7 @@ export default function TodoForm() {
   const [input, setInput] = useState("");
   const [todos, setTodos] = useState([]);
   const [editIndex, setEditIndex] = useState(-1);
+  const [isBackendTrue, setIsBackendTrue] = useState(true);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -34,31 +35,44 @@ export default function TodoForm() {
         // Updating the frontend's state with the new todo received from the backend
         setTodos([...todos, response.data]);
         setInput("");
+        setIsBackendTrue(false)
       } catch (error) {
         console.error("Error adding todo:", error);
       }
     }
   };
 
-  // const RemoveTodo = (todo) => {
-  //   const removeTodo = todos.filter((item) => item !== todo)
-  //   setTodos(removeTodo)
-  // };
+  const handleAdd = (e) => {
+    console.log("added")
+    e.preventDefault()
+    const newItem = {
+        id: todos.length + 1,  // or another way to generate unique IDs
+        isImportant: false,  // default value
+        item: input
+    };
+    setTodos([...todos, newItem]);
+    setInput('')
+}
 
-  // const EditTodo = (newContext, index) => {
-  //   if (newContext.trim() !== '') {
-  //     const editTodo = [...todos]
-  //     editTodo[index] = newContext
-  //     setTodos(editTodo)
-  //     setEditIndex(-1)
-  //   }
-  // };
+  const RemoveTodo = (todo) => {
+    const removeTodo = todos.filter((item) => item !== todo)
+    setTodos(removeTodo)
+  };
+
+  const EditTodo = (newContext, index) => {
+    if (newContext.trim() !== '') {
+      const editTodo = [...todos]
+      editTodo[index] = newContext
+      setTodos(editTodo)
+      setEditIndex(-1)
+    }
+  };
 
   return (
     <div className='margin form-list'>
       <div className='margin text-div'>
         <h1 className='heading'>What's the Plan for Today?</h1>      
-        <form className='margin' onSubmit={AddTodo}>
+        <form className='margin' onSubmit={isBackendTrue ? handleAdd : AddTodo}>
           <input 
             className='add-input'
             type = "text" 
